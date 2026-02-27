@@ -2,11 +2,11 @@ import type { ProductProducerPort } from '../../domain/ports/product.producer.po
 import { CreateProductCommand } from '../../domain/commands/create-product.command'
 import { Inject } from '@nestjs/common'
 import { UseCase } from 'src/base/lib/application/use-case.base'
-import { PRODUCT_PRODUCER_PORT } from 'src/app/di.tokens'
+import { PRODUCT_PRODUCER_ADAPTER } from 'src/app/di.tokens'
 
 export class ProductCreator implements UseCase<CreateProductCommand> {
   constructor(
-    @Inject(PRODUCT_PRODUCER_PORT)
+    @Inject(PRODUCT_PRODUCER_ADAPTER)
     private readonly producer: ProductProducerPort,
   ) {}
 

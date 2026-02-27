@@ -6,18 +6,19 @@ import { FindProductByIdQuery } from '../../../domain/queries/find-product-by-id
 import { FindProductByIdResponseDto } from './dto/find-product-by-id.response'
 import { ProductHttpClientMapper } from './mapper/product.http-client.mapper'
 import { FindAllProductsResponseDto } from './dto/find-all-products.response'
-import type { HttpClientPort } from 'src/base/config/http/http-client.port'
-import { HTTP_CLIENT_PORT } from 'src/base/config/http/http-client-di-tokens'
+import { AxiosHttpClient } from 'src/base/config/http/axios.http-client'
+import { EnvConfigService } from 'src/base/config/env/env-config.service'
+import type { LoggerPort } from 'src/base/lib/domain/logger.port'
+import { LOGGER_ADAPTER } from 'src/base/config/logger/logger-di-tokens'
 
 @Injectable()
-export class ProductHttpClientAdapter implements ProductRepositoryPort {
-  constructor(
-    @Inject(HTTP_CLIENT_PORT)
-    private readonly httpClient: HttpClientPort,
-  ) {}
+export class ProductHttpClientAdapter extends AxiosHttpClient implements ProductRepositoryPort {
+  constructor(envConfig: EnvConfigService, @Inject(LOGGER_ADAPTER) logger: LoggerPort) {
+    super(envConfig)
+  }
 
   async findById(query: FindProductByIdQuery): Promise<Product | null> {
-    const response = await this.httpClient.get<FindProductByIdResponseDto>(`/products/${query.id}`).catch((error) => {
+    const response = await this.get<FindProductByIdResponseDto>(`/products/${query.id}`).catch((error) => {
       throw new Error(error.message)
     })
 
@@ -30,11 +31,9 @@ export class ProductHttpClientAdapter implements ProductRepositoryPort {
 
   async findAll(query: FindAllProductsQuery): Promise<Product[]> {
     const { page, limit } = query
-    const response = await this.httpClient
-      .get<FindAllProductsResponseDto>(`/products?page=${page}&limit=${limit}`)
-      .catch((error) => {
-        throw new Error(error.message)
-      })
+    const response = await this.get<FindAllProductsResponseDto>(`/products?page=${page}&limit=${limit}`).catch((error) => {
+      throw new Error(error.message)
+    })
 
     if (!response?.data) {
       return []

@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common'
 import { AppController } from './app.controller'
 import { EnvConfigModule } from 'src/base/config/env/env-config.module'
-import { HttpClientModule } from 'src/base/config/http/http-client.module'
-import { MessageQueueModule } from 'src/base/config/message/mq-client.module'
+
 import { LoggerModule } from 'src/base/config/logger/logger.module'
 import { CreateProductHttpController } from './interface/controllers/create-product/create-product.http.controller'
 import { UpdateProductHttpController } from './interface/controllers/update-product/update-product.http.controller'
@@ -14,12 +13,13 @@ import { ProductUpdater } from './application/commands/product-updater'
 import { ProductRemover } from './application/commands/product-remover'
 import { ProductByIdFinder } from './application/queries/product-by-id-finder'
 import { ProductsFinder } from './application/queries/products-finder'
-import { PRODUCT_PRODUCER_PORT, PRODUCT_REMOTE_REPOSITORY_PORT } from './di.tokens'
+import { PRODUCT_PRODUCER_ADAPTER, PRODUCT_REMOTE_REPOSITORY_ADAPTER } from './di.tokens'
 import { ProductSQSClientAdapter } from './infrastructure/producer/sqs/product.sqs.adapter'
 import { ProductHttpClientAdapter } from './infrastructure/repository/http-client/product.http-client.adapter'
+import { MessageModule } from 'src/base/config/message/message.module'
 
 @Module({
-  imports: [EnvConfigModule, HttpClientModule, MessageQueueModule, LoggerModule],
+  imports: [EnvConfigModule, LoggerModule, MessageModule],
   controllers: [
     CreateProductHttpController,
     UpdateProductHttpController,
@@ -35,11 +35,11 @@ import { ProductHttpClientAdapter } from './infrastructure/repository/http-clien
     ProductByIdFinder,
     ProductsFinder,
     {
-      provide: PRODUCT_PRODUCER_PORT,
+      provide: PRODUCT_PRODUCER_ADAPTER,
       useClass: ProductSQSClientAdapter,
     },
     {
-      provide: PRODUCT_REMOTE_REPOSITORY_PORT,
+      provide: PRODUCT_REMOTE_REPOSITORY_ADAPTER,
       useClass: ProductHttpClientAdapter,
     },
   ],

@@ -1,9 +1,9 @@
 import { Global, Module } from '@nestjs/common'
-import { LOGGER_PORT } from './logger-di-tokens'
+import { LOGGER_ADAPTER } from './logger-di-tokens'
 import { LoggerAdapter } from './logger.adapter'
 
 const logger = {
-  provide: LOGGER_PORT,
+  provide: LOGGER_ADAPTER,
   useClass: LoggerAdapter,
 }
 

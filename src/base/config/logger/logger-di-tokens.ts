@@ -1,1 +1,1 @@
-export const LOGGER_PORT = Symbol('LOGGER_PORT')
+export const LOGGER_ADAPTER = Symbol('LOGGER_ADAPTER')

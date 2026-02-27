@@ -1,5 +1,5 @@
 import { Injectable, Logger, Scope } from '@nestjs/common'
-import { LoggerPort } from './logger.port'
+import { LoggerPort } from '../../lib/domain/logger.port'
 
 @Injectable({ scope: Scope.TRANSIENT })
 export class LoggerAdapter implements LoggerPort {

@@ -1,11 +1,16 @@
 import { AxiosInstance } from 'axios'
 import axios from 'axios'
-import { HttpClientPort, HttpHeaders, HttpResponse } from './http-client.port'
 import { EnvConfigService } from '../env/env-config.service'
-import { Injectable } from '@nestjs/common'
 
-@Injectable()
-export class AxiosAdapter implements HttpClientPort {
+export type HttpHeaders = Record<string, string>
+
+export interface HttpResponse<T> {
+  data: T
+  status: number
+  headers: HttpHeaders
+}
+
+export class AxiosHttpClient {
   private http: AxiosInstance
 
   constructor(envConfigService: EnvConfigService) {
